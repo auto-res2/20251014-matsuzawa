@@ -1,0 +1,36 @@
+run_id: comparative-2-MobileNetV2-0.5-3.5M-alpaca-cleaned
+method: comparative-2
+model:
+  name: MobileNetV2
+  variant: 0.5
+  parameters: 3.5M
+  pretrained: false
+  input_adapter:
+    type: char_cnn
+    embedding_dim: 256
+dataset:
+  name: alpaca-cleaned
+  task: instruction_following
+  max_seq_length: 512
+  tokenizer: char
+training:
+  epochs: 3
+  batch_size: 16
+  learning_rate: 0.001
+  optimizer: adam
+  weight_decay: 0.01
+  gradient_accumulation_steps: 2
+optuna:
+  n_trials: 15
+  search_space:
+    learning_rate:
+      type: loguniform
+      low: 1e-4
+      high: 1e-2
+    batch_size:
+      type: categorical
+      choices: [8, 16, 32]
+    weight_decay:
+      type: loguniform
+      low: 1e-5
+      high: 1e-1

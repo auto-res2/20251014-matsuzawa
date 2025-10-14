@@ -1,0 +1,46 @@
+run_id: comparative-2-DistilBERT-base-66M-CIFAR-10
+method: comparative-2
+model:
+  name: distilbert-base-uncased
+  parameters: 66M
+  pretrained: true
+  modality_adapter:
+    type: linear_patch_embedding
+    patch_size: 4
+    sequence_length: 64
+dataset:
+  name: CIFAR-10
+  splits:
+    train: 45000
+    val: 5000
+    test: 10000
+  image_size: 32
+  normalization:
+    mean: [0.4914, 0.4822, 0.4465]
+    std: [0.2023, 0.1994, 0.2010]
+training:
+  epochs: 10
+  batch_size: 32
+  learning_rate: 0.0001
+  optimizer: adamw
+  weight_decay: 0.01
+  lr_scheduler:
+    type: linear
+    warmup_steps: 500
+optuna:
+  n_trials: 20
+  search_space:
+    learning_rate:
+      type: loguniform
+      low: 1e-5
+      high: 1e-3
+    batch_size:
+      type: categorical
+      choices: [16, 32, 64]
+    patch_size:
+      type: categorical
+      choices: [2, 4, 8]
+    weight_decay:
+      type: loguniform
+      low: 1e-5
+      high: 1e-2
